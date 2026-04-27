@@ -2,9 +2,6 @@ from fastapi import APIRouter, HTTPException, Form
 from typing import Literal
 from database import foods, orders, users
 from pydantic import BaseModel
-from bson import ObjectId
-from bson.errors import InvalidId
-
 router = APIRouter()
 
 # ✅ Hardcoded Admin Credentials (only 1 admin)
