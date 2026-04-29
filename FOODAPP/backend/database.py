@@ -2,16 +2,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# MongoDB URL (from .env)
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-# Create client
-client = AsyncIOMotorClient(MONGO_URL)
+DB_NAME = os.getenv("DB_NAME", "food_app_db")
 
-# Database
-db = client["food_app_db"]
+client = AsyncIOMotorClient(MONGO_URL)
+db = client[DB_NAME]
 
 # Collections
 foods = db["foods"]

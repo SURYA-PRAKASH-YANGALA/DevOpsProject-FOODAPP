@@ -1,5 +1,19 @@
 venv/
+# Environment files - never push these
+backend/.env
+admin_ui/.env
+user_ui/.env
+
+# Python cache
 __pycache__/
 *.pyc
-.env
+*.pyo
+
+# Node modules
 node_modules/
+admin_ui/node_modules/
+user_ui/node_modules/
+
+# Build folders
+admin_ui/build/
+user_ui/build/

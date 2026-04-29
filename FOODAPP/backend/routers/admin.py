@@ -2,22 +2,31 @@ from fastapi import APIRouter, HTTPException, Form
 from typing import Literal
 from database import foods, orders, users
 from pydantic import BaseModel
+from bson import ObjectId
+from bson.errors import InvalidId
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 router = APIRouter()
 
-# ✅ Hardcoded Admin Credentials (only 1 admin)
-ADMIN_EMAIL = "admin@foodease.com"
-ADMIN_PASSWORD = "admin123"
+# ✅ Read from .env — nothing hardcoded in code
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 
-# ✅ Admin Login Model
 class AdminLogin(BaseModel):
     email: str
     password: str
 
 
-# ✅ 1. ADMIN LOGIN (hardcoded)
+# 1. ADMIN LOGIN
 @router.post("/login")
 async def admin_login(data: AdminLogin):
+    if not ADMIN_EMAIL or not ADMIN_PASSWORD:
+        raise HTTPException(status_code=500, detail="Admin credentials not configured")
+
     if data.email != ADMIN_EMAIL or data.password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Invalid admin credentials")
 
@@ -30,7 +39,7 @@ async def admin_login(data: AdminLogin):
     }
 
 
-# ✅ 2. ADD FOOD (no image)
+# 2. ADD FOOD
 @router.post("/add-food")
 async def add_food(
     name: str = Form(...),
@@ -55,7 +64,7 @@ async def add_food(
     return {"message": "Food added successfully"}
 
 
-# ✅ 3. GET ALL FOODS
+# 3. GET ALL FOODS
 @router.get("/get-foods")
 async def get_foods():
     all_foods = []
@@ -65,7 +74,7 @@ async def get_foods():
     return {"foods": all_foods}
 
 
-# ✅ 4. DELETE FOOD
+# 4. DELETE FOOD
 @router.delete("/delete-food/{food_id}")
 async def delete_food(food_id: str):
     try:
@@ -81,7 +90,7 @@ async def delete_food(food_id: str):
     return {"message": "Food deleted successfully"}
 
 
-# ✅ 5. GET ALL ORDERS
+# 5. GET ALL ORDERS
 @router.get("/orders")
 async def get_orders():
     all_orders = []
@@ -91,7 +100,7 @@ async def get_orders():
     return {"orders": all_orders}
 
 
-# ✅ 6. GET ALL USERS (password hidden)
+# 6. GET ALL USERS (password hidden)
 @router.get("/users")
 async def get_users():
     all_users = []
